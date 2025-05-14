@@ -1,20 +1,5 @@
-interface IRole {
-    id: String;
-    name: String;
+export interface ApiResponse<T> {
+    isSuccess: boolean;
+    message: string;
+    payload: T | null;
 }
-
-export type Role = IRole | null;
-
-
-interface ILogin {
-    login: String;
-    password: String;
-}
-
-interface IRegister {
-    userName: String;
-    password: String;
-    email: String;
-}
-
-export type AuthType = ILogin | IRegister;
