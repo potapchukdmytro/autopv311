@@ -1,11 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit'
-import roleReducer from './features/role/roleSlice'
-import { roleApi } from '../services/role'
+import { roleApi } from '../services/role/role'
 // ...
 
 export const store = configureStore({
   reducer: {
-    role: roleReducer,
     [roleApi.reducerPath]: roleApi.reducer
   },
   middleware: (getDefaultMiddleware) => 
