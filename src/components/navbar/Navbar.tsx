@@ -9,7 +9,7 @@ import {
     MenuItems,
 } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 function classNames(...classes: any[]) {
     return classes.filter(Boolean).join(" ");
