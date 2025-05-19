@@ -1,5 +1,6 @@
 {
-  "platform": {
-    "apiRuntime": "node:20"
+  "mimeTypes": {
+    ".js": "application/javascript",
+    ".mjs": "application/javascript"
   }
 }
