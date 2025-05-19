@@ -12,10 +12,10 @@ import { Role } from "../../services/role/types";
 import { InputText } from "primereact/inputtext";
 import { ContextMenu } from "primereact/contextmenu";
 import { Button } from "primereact/button";
-import { ApiResponse } from "../../types";
+import { Toast } from 'primereact/toast';
 
 const RoleListPage: React.FC = () => {
-    const { data, isError, isLoading, error } = useGetRolesQuery();
+    const { data, isError, isLoading } = useGetRolesQuery();
     const [selectedProduct, setSelectedProduct] = useState<Role | undefined>(
         undefined
     );
@@ -25,6 +25,7 @@ const RoleListPage: React.FC = () => {
     const [createRole] =
         useCreateRoleMutation();
     const cm = useRef<ContextMenu>(null);
+    const toast = useRef<Toast>(null);
 
     const menuModel = [
         {
@@ -34,29 +35,53 @@ const RoleListPage: React.FC = () => {
         },
     ];
 
+    // toast
+    const showSuccess = (message: string) => {
+        toast.current?.show({severity:'success', summary: 'Success', detail: message, life: 3000});
+    }
+
+    const showError = (message: string) => {
+        toast.current?.show({severity:'error', summary: 'Error', detail: message, life: 3000});
+    }
+
+    const apiResultHanler = (result: any) => {
+        if (!result.error) {
+            setRoleName("");
+            if('message' in result.data) {
+                showSuccess(result.data.message);
+            }
+        } else {
+            if('data' in result.error) {
+                const data = result.error.data as any;
+                if('message' in data) {
+                    showError(data.message);
+                }
+            }
+        }
+    }
+
+    const onRowEditComplete = async (e: DataTableRowEditCompleteEvent) => {
+        const newRole = {
+            id: e.newData.id,
+            name: e.newData.name,
+        };
+
+        const res = await updateRole(newRole);
+        apiResultHanler(res);
+    };
+
     const deleteRoleHandler = async (role: Role | undefined) => {
         if (role === undefined || role.name === "admin") {
             return;
-        } else {
-            deleteRole(role.id);
         }
-    };
 
-    if (isError) {
-        console.log(error);
-    }
+        const res = await deleteRole(role.id);
+        apiResultHanler(res);
+    };
 
     const createRoleHandler = async () => {
         const res = await createRole(roleName);
-        if (!res.error) {
-            setRoleName("");
-        } else {
-            if('data' in res.error) {
-                const data = res.error.data as ApiResponse<null>;
-                console.log(data.isSuccess);   
-                console.log(data.message);   
-            }
-        }
+        apiResultHanler(res);
     };
 
     const textEditor = (options: ColumnEditorOptions) => {
@@ -71,24 +96,18 @@ const RoleListPage: React.FC = () => {
         );
     };
 
-    const onRowEditComplete = async (e: DataTableRowEditCompleteEvent) => {
-        const newRole = {
-            id: e.newData.id,
-            name: e.newData.name,
-        };
-
-        await updateRole(newRole);
-    };
-
     return (
         <div>
             {isLoading ? (
-                <ProgressSpinner />
+                <div style={{display: "flex", justifyContent: "center"}}>
+                    <ProgressSpinner />
+                </div>
             ) : (
                 data?.payload !== null &&
-                data !== undefined && (
+                data !== undefined ? (
                     <>
                         <div className="card">
+                            <Toast ref={toast} />
                             <ContextMenu
                                 model={menuModel}
                                 ref={cm}
@@ -137,6 +156,11 @@ const RoleListPage: React.FC = () => {
                             />
                         </div>
                     </>
+                ) : isError && (
+                    <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+                        <h1 className="text-4xl text-red-600 m-3 font-semibold">Connection failed</h1>
+                        <img alt="error" style={{maxWidth: "600px"}} src="https://static.vecteezy.com/system/resources/previews/021/786/446/non_2x/electric-socket-with-a-plug-icon-in-flat-style-connection-symbol-illustration-on-isolated-background-404-error-sign-business-concept-vector.jpg"/>
+                    </div>
                 )
             )}
         </div>

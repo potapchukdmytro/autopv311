@@ -2,13 +2,13 @@ import React from "react";
 import Navbar from "../navbar/Navbar";
 import { Outlet } from "react-router-dom";
 
-const DefaultLayout: React.FC = () => {
+const DefaultLayout: React.FC = () => {    
     return (
         <div>
             <div>
                 <Navbar />
             </div>
-            <div>
+            <div style={{padding: "0px 200px"}}>
                 <Outlet />
             </div>
         </div>
