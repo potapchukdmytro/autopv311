@@ -19,7 +19,7 @@ const Navbar: React.FC = () => {
     const navigation = [
         { name: "Dashboard", href: "/", current: true },
         { name: "Roles", href: "/role", current: false },
-        { name: "Projects", href: "#", current: false },
+        { name: "Users", href: "/user", current: false },
         { name: "Calendar", href: "#", current: false },
     ];
 

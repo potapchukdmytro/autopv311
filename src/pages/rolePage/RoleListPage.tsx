@@ -16,7 +16,7 @@ import { Toast } from 'primereact/toast';
 
 const RoleListPage: React.FC = () => {
     const { data, isError, isLoading } = useGetRolesQuery();
-    const [selectedProduct, setSelectedProduct] = useState<Role | undefined>(
+    const [selectedRole, setSelectedRole] = useState<Role | undefined>(
         undefined
     );
     const [roleName, setRoleName] = useState<string>("");
@@ -31,7 +31,7 @@ const RoleListPage: React.FC = () => {
         {
             label: "Delete",
             icon: "pi pi-fw pi-times",
-            command: () => deleteRoleHandler(selectedProduct),
+            command: () => deleteRoleHandler(selectedRole),
         },
     ];
 
@@ -111,14 +111,14 @@ const RoleListPage: React.FC = () => {
                             <ContextMenu
                                 model={menuModel}
                                 ref={cm}
-                                onHide={() => setSelectedProduct(undefined)}
+                                onHide={() => setSelectedRole(undefined)}
                             />
                             <DataTable
                                 value={data.payload}
                                 onContextMenuSelectionChange={(e) =>
-                                    setSelectedProduct(e.value)
+                                    setSelectedRole(e.value)
                                 }
-                                contextMenuSelection={selectedProduct}
+                                contextMenuSelection={selectedRole}
                                 onRowEditComplete={onRowEditComplete}
                                 onContextMenu={(e) =>
                                     cm.current?.show(e.originalEvent)
